@@ -9,3 +9,9 @@ A small webpage design for a Pomodoro Timer
   - Short Break Time
   - Long Break Time
   - Number of Rounds
+
+**TODO:**
+ - [ ] Tidy + Modernise UI
+ - [ ] Stats
+ - [ ] Optional Notifications
+ - [ ] Cloud Sync
