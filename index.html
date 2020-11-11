@@ -1,0 +1,400 @@
+<style>
+    html {
+        background-color: black;
+        color: lightgrey;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: xxx-large;
+    }
+
+    h2 {
+        text-align: center;
+        font-size: xx-large;
+    }
+
+    .progress {
+        text-align: center;
+    }
+
+    progress {
+        width: 90%;
+        align-self: center;
+        height: 30px;
+        appearance: none;
+        border: none;
+        background-color: royalblue;
+        border-radius: 3px;
+        border-color: white;
+    }
+
+    progress::-webkit-progress-value {
+        background: white;
+    }
+
+    progress::-moz-progress-bar {
+        background: white;
+    }
+
+    progress::-webkit-progress-value {
+        background: white;
+    }
+
+    progress::-webkit-progress-bar {
+        background: black;
+    }
+
+    button {
+        color: white;
+        background-color: rgb(75, 75, 75);
+        appearance: none;
+        border-radius: 10px;
+        border: none;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        width: 80%;
+    }
+
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 10px;
+        background: grey;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+    }
+    #settings{
+        align-items: center;
+        text-align: center;
+    }
+    #skipimg{
+        width: 5%;
+    }
+    #pauseimg{
+        width: 5%;
+    }
+    #resetimg{
+        width: 5%;
+    }
+    #settingsimg{
+        position: relative;
+        top: 3px;
+        width: 5.8%;
+    }
+    #fullscreenimg{
+        width: 5%;
+    }
+    .buttons{
+        text-align: center;
+    }
+    #time {
+        float: left;
+        font-size: 11px;
+    }
+    #status{
+        float: right;
+        font-size: 11px;
+    }
+    /*Disable Scroll Bar*/
+    html::-webkit-scrollbar { width: 0 }
+    html { overflow: -moz-scrollbars-none; }
+    html { -ms-overflow-style: none; }
+</style>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    
+    <title>P O M O D O R O</title>
+    <meta name="description" content="Pomodoro Timer">
+    <meta name="author" content="Joel Then">
+    
+</head>
+<h1>P O M O D O R O</h1>
+<div class="progress">
+    0%
+    <progress id="progress" max=100 value=10></progress>
+    100%
+</div>
+<br>
+<div id="time">
+</div>
+<div id="status">
+    Current Status: Configuring
+</div>
+
+<br>
+<br>
+<br>
+<div class="buttons">
+    <input id="pauseimg" type="image" src="pause.png" onclick="pause()">
+    <input id="skipimg" type="image"src="skip.png" onclick="skip()">
+    <input id="resetimg" type="image"src="reset.png" onclick="reset()">
+    <input id="settingsimg" type="image"src="settings.png" onclick="togglesettings()">
+    <input id="fullscreenimg" type="image"src="settings.png" onclick="togglefullscreen()">
+</div>
+<br>
+<div id="settings">
+<h2>S E T T I N G S</h2>
+<p id="work">Working Time: 50 min</p>
+<input type="range" min=1 max=100 value="50" class="slider" id="WorkRange" onmousemove="workchange()"" ontouchmove="workchange()">
+<p id="short">Short Break Time: 50 min</p>
+<input type="range" min=1 max=100 value="50" class="slider" id="ShortRange" onmousemove="shortchange()" ontouchmove="shortchange()">
+<p id="long">Long Break Time: 50 min</p>
+<input type="range" min=1 max=100 value="50" class="slider" id="LongRange" onmousemove="longchange()" ontouchmove="longchange()">
+<p id="round">Rounds: 4</p>
+<input type="range" min=1 max=12 value="4" class="slider" id="RoundRange" onmousemove="roundchange()" ontouchmove="roundchange()">
+<br><br>
+<button class="apply" onclick="apply()">Apply Changes</button>
+<br>
+</div>
+</html>
+<script>
+    var work = 0;
+    var short = 0;
+    var long = 0;
+    var rounds = 0;
+    var sec = 0;
+    var min = 0;
+    var hr = 0;
+    var id = 0;
+    var ssec = "0";
+    var shr = "0";
+    var smin = "0";
+    var total = 0;
+    var id2 = 0;
+    var starttime;
+    var y = false;
+    var startoffset = 0;
+    var pauseoffset = 0;
+    var started = false;
+    var current = "WorkRange";
+    var prevstatus = "";
+    var status = "5"; //1 for work, 2 for short break, 3 for long break, 4 for paused, 5 for configuring, 6 for status reset - only for the start() function not for statusupdate()
+    var f = (window.fullScreen) ||
+   (window.innerWidth == screen.width && window.innerHeight == screen.height);
+    if (f){
+        document.getElementById("fullscreenimg").src="exitfullscreen.png";
+    } else {
+        document.getElementById("fullscreenimg").src="enterfullscreen.png";
+    }
+    var round = 1;
+    var settingstoggle = true;
+    document.getElementById("pauseimg").src="play.png";
+    apply();
+    function togglefullscreen(){
+        if (!f){
+            document.documentElement.requestFullscreen();
+            document.getElementById("fullscreenimg").src="exitfullscreen.png";
+        } else {
+            document.exitFullscreen();
+            document.getElementById("fullscreenimg").src="enterfullscreen.png";
+        }
+        f = !f;
+    }
+    function togglesettings(){
+        if (!settingstoggle){
+            document.getElementById("settings").style.display = "block";
+        } else {
+            document.getElementById("settings").style.display = "none";
+        }
+        settingstoggle = !settingstoggle;
+    }
+    function skip(){
+        reset();
+        next();
+    }
+    function workchange() {
+        work = document.getElementById("WorkRange").value;
+        document.getElementById("work").innerHTML = "Working Time: " + work + " min";
+    }
+    function shortchange() {
+        short = document.getElementById("ShortRange").value;
+        document.getElementById("short").innerHTML = "Short Break Time: " + short + " min"
+    }
+    function longchange() {
+        long = document.getElementById("LongRange").value;
+        document.getElementById("long").innerHTML = "Long Break Time: " + long + " min"
+    }
+    function roundchange() {
+        rounds = document.getElementById("RoundRange").value;
+        document.getElementById("round").innerHTML = "Rounds: " + rounds;
+    }
+    function apply() {
+        applytime("WorkRange");
+        reset();
+        status = "5";
+        round = 1;
+    }
+    function applytime(id) {
+        current = id;
+        let t = document.getElementById(id).value;
+        sec = 0;
+        hr = Math.floor(t / 60);
+        min = t % 60;
+        smin = min.toString();
+        ssec = sec.toString();
+        shr = hr.toString();
+        total = sec + min * 60 + hr * 3600;
+        if (ssec.length == 1) { ssec = "0" + ssec }
+        if (smin.length == 1) { smin = "0" + smin }
+        if (shr.length == 1) { shr = "0" + shr }
+        document.getElementById("time").innerHTML = "Time Left: " + shr + ":" + smin + ":" + ssec;
+        document.getElementById("progress").value = 0;
+    }
+    function statusupdate() {
+        switch (status) {
+            case "1":
+                document.getElementById("status").innerHTML = "Current Status: Working"
+                break;
+            case "2":
+                document.getElementById("status").innerHTML = "Current Status: Short Break"
+                break;
+            case "3":
+                document.getElementById("status").innerHTML = "Current Status: Long Break"
+                break;
+            case "4":
+                document.getElementById("status").innerHTML = "Current Status: Paused"
+                break;
+            default:
+                document.getElementById("status").innerHTML = "Current Status: Configuring"
+        }
+    }
+    function start() {
+        clearInterval(id);
+        clearInterval(id2);
+        starttime = new Date();
+        id = setInterval(updatetime, 1000);
+        id2 = setInterval(smooth, 1);
+        startoffset = 0;
+        y = false;
+        document.getElementById("pauseimg").src="pause.png";
+        if (status == 6){
+            status = prevstatus;
+        } else if (status != "5" && status != prevstatus){
+            status = prevstatus;
+        } else if (status != prevstatus){
+            status = "1";
+        }
+        statusupdate();
+        started = true;
+    }
+    function smooth() {
+        document.getElementById("progress").value = (((new Date()) - starttime - startoffset) / (total * 1000)) * 100;
+    }
+    function next() {
+        if (round == rounds * 2 - 1) {
+            applytime("LongRange");
+            status = "3";
+            prevstatus = status;
+            statusupdate();
+            round++;
+        } else if (round == rounds * 2) {
+            round = 1;
+            applytime("WorkRange");
+            status = "1";
+            prevstatus = status;
+            statusupdate();
+        } else if (round % 2 == 1) {
+            applytime("ShortRange");
+            status = "2";
+            prevstatus = status;
+            statusupdate();
+            round++;
+        } else {
+            applytime("WorkRange");
+            status = "1";
+            prevstatus = status;
+            statusupdate();
+            round++;
+        }
+        start();
+    }
+    function updatetime() {
+        if (sec != 0) {
+            sec--;
+        } else if (min != 0) {
+            sec = 59;
+            min--;
+        } else if (hr != 0) {
+            min = 59;
+            sec = 59;
+            hr--;
+        } else {
+            clearInterval(id);
+            clearInterval(id2);
+            next();
+        }
+        ssec = sec.toString();
+        shr = hr.toString();
+        smin = min.toString();
+        if (ssec.length == 1) { ssec = "0" + ssec }
+        if (smin.length == 1) { smin = "0" + smin }
+        if (shr.length == 1) { shr = "0" + shr }
+        document.getElementById("time").innerHTML = "Time Left: " + shr + ":" + smin + ":" + ssec;
+    }
+    function reset() {
+        applytime(current);
+        clearInterval(id);
+        clearInterval(id2);
+        startoffset = 0;
+        started = false;
+        //pauseoffset = 0;
+        prevstatus = status;
+        status = "5";
+        statusupdate();
+        status = "6";
+        document.getElementById("pauseimg").src="play.png";
+    }
+    function pause() {
+        if (!started) {
+            start();
+            started = !started;
+            return;
+        }
+        if (y) {
+            startoffset += (new Date()) - pauseoffset;
+            id = setInterval(updatetime, 1000);
+            id2 = setInterval(smooth, 1);
+            y = !y;
+            document.getElementById("pauseimg").src="pause.png";
+            status = prevstatus;
+            statusupdate();
+        } else {
+            pauseoffset = (new Date());
+            clearInterval(id);
+            clearInterval(id2);
+            y = !y;
+            document.getElementById("pauseimg").src="play.png";
+            prevstatus = status;
+            status = "4";
+            statusupdate();
+        }
+
+    }
+</script>
