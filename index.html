@@ -88,55 +88,75 @@
         background: white;
         cursor: pointer;
     }
-    #settings{
+
+    #settings {
         align-items: center;
         text-align: center;
     }
-    #skipimg{
+
+    #skipimg {
         width: 3%;
         vertical-align: middle;
     }
-    #pauseimg{
+
+    #pauseimg {
         width: 3%;
         vertical-align: middle;
     }
-    #resetimg{
+
+    #resetimg {
         width: 3%;
         vertical-align: middle;
     }
-    #settingsimg{
+
+    #settingsimg {
         position: relative;
         vertical-align: middle;
         width: 3.8%;
     }
-    #fullscreenimg{
+
+    #fullscreenimg {
         width: 3%;
+        vertical-align: middle;
     }
-    .buttons{
+
+    .buttons {
         text-align: center;
     }
+
     #time {
         float: left;
         font-size: 11px;
     }
-    #status{
+
+    #status {
         float: right;
         font-size: 11px;
     }
+
     /*Disable Scroll Bar*/
-    html::-webkit-scrollbar { width: 0 }
-    html { overflow: -moz-scrollbars-none; }
-    html { -ms-overflow-style: none; }
+    html::-webkit-scrollbar {
+        width: 0
+    }
+
+    html {
+        overflow: -moz-scrollbars-none;
+    }
+
+    html {
+        -ms-overflow-style: none;
+    }
 </style>
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
-    
+
     <title>P O M O D O R O</title>
     <meta name="description" content="Pomodoro Timer">
     <meta name="author" content="Joel Then">
-    
+
 </head>
 <h1>P O M O D O R O</h1>
 <div class="progress">
@@ -156,26 +176,31 @@
 <br>
 <div class="buttons">
     <input id="pauseimg" type="image" src="pause.png" onclick="pause()">
-    <input id="skipimg" type="image"src="skip.png" onclick="skip()">
-    <input id="resetimg" type="image"src="reset.png" onclick="reset()">
-    <input id="settingsimg" type="image"src="settings.png" onclick="togglesettings()">
-    <input id="fullscreenimg" type="image"src="settings.png" onclick="togglefullscreen()">
+    <input id="skipimg" type="image" src="skip.png" onclick="skip()">
+    <input id="resetimg" type="image" src="reset.png" onclick="reset()">
+    <input id="settingsimg" type="image" src="settings.png" onclick="togglesettings()">
+    <input id="fullscreenimg" type="image" src="settings.png" onclick="togglefullscreen()">
 </div>
 <br>
 <div id="settings">
-<h2>S E T T I N G S</h2>
-<p id="work">Working Time: 50 min</p>
-<input type="range" min=1 max=100 value="50" class="slider" id="WorkRange" onmousemove="workchange()"" ontouchmove="workchange()">
-<p id="short">Short Break Time: 50 min</p>
-<input type="range" min=1 max=100 value="50" class="slider" id="ShortRange" onmousemove="shortchange()" ontouchmove="shortchange()">
-<p id="long">Long Break Time: 50 min</p>
-<input type="range" min=1 max=100 value="50" class="slider" id="LongRange" onmousemove="longchange()" ontouchmove="longchange()">
-<p id="round">Rounds: 4</p>
-<input type="range" min=1 max=12 value="4" class="slider" id="RoundRange" onmousemove="roundchange()" ontouchmove="roundchange()">
-<br><br>
-<button class="apply" onclick="apply()">Apply Changes</button>
-<br>
+    <h2>S E T T I N G S</h2>
+    <p id="work">Working Time: 50 min</p>
+    <input type="range" min=1 max=100 value="50" class="slider" id="WorkRange" onmousemove="workchange()"" ontouchmove="
+        workchange()">
+    <p id="short">Short Break Time: 50 min</p>
+    <input type="range" min=1 max=100 value="50" class="slider" id="ShortRange" onmousemove="shortchange()"
+        ontouchmove="shortchange()">
+    <p id="long">Long Break Time: 50 min</p>
+    <input type="range" min=1 max=100 value="50" class="slider" id="LongRange" onmousemove="longchange()"
+        ontouchmove="longchange()">
+    <p id="round">Rounds: 4</p>
+    <input type="range" min=1 max=12 value="4" class="slider" id="RoundRange" onmousemove="roundchange()"
+        ontouchmove="roundchange()">
+    <br><br>
+    <button class="apply" onclick="apply()">Apply Changes</button>
+    <br>
 </div>
+
 </html>
 <script>
     var work = 0;
@@ -200,35 +225,35 @@
     var prevstatus = "";
     var status = "5"; //1 for work, 2 for short break, 3 for long break, 4 for paused, 5 for configuring, 6 for status reset - only for the start() function not for statusupdate()
     var f = (window.fullScreen) ||
-   (window.innerWidth == screen.width && window.innerHeight == screen.height);
-    if (f){
-        document.getElementById("fullscreenimg").src="exitfullscreen.png";
+        (window.innerWidth == screen.width && window.innerHeight == screen.height);
+    if (f) {
+        document.getElementById("fullscreenimg").src = "exitfullscreen.png";
     } else {
-        document.getElementById("fullscreenimg").src="enterfullscreen.png";
+        document.getElementById("fullscreenimg").src = "enterfullscreen.png";
     }
     var round = 1;
     var settingstoggle = true;
-    document.getElementById("pauseimg").src="play.png";
+    document.getElementById("pauseimg").src = "play.png";
     apply();
-    function togglefullscreen(){
-        if (!f){
+    function togglefullscreen() {
+        if (!f) {
             document.documentElement.requestFullscreen();
-            document.getElementById("fullscreenimg").src="exitfullscreen.png";
+            document.getElementById("fullscreenimg").src = "exitfullscreen.png";
         } else {
             document.exitFullscreen();
-            document.getElementById("fullscreenimg").src="enterfullscreen.png";
+            document.getElementById("fullscreenimg").src = "enterfullscreen.png";
         }
         f = !f;
     }
-    function togglesettings(){
-        if (!settingstoggle){
+    function togglesettings() {
+        if (!settingstoggle) {
             document.getElementById("settings").style.display = "block";
         } else {
             document.getElementById("settings").style.display = "none";
         }
         settingstoggle = !settingstoggle;
     }
-    function skip(){
+    function skip() {
         reset();
         next();
     }
@@ -296,12 +321,12 @@
         id2 = setInterval(smooth, 1);
         startoffset = 0;
         y = false;
-        document.getElementById("pauseimg").src="pause.png";
-        if (status == 6){
+        document.getElementById("pauseimg").src = "pause.png";
+        if (status == 6) {
             status = prevstatus;
-        } else if (status != "5" && status != prevstatus){
+        } else if (status != "5" && status != prevstatus) {
             status = prevstatus;
-        } else if (status != prevstatus){
+        } else if (status != prevstatus) {
             status = "1";
         }
         statusupdate();
@@ -372,7 +397,7 @@
         status = "5";
         statusupdate();
         status = "6";
-        document.getElementById("pauseimg").src="play.png";
+        document.getElementById("pauseimg").src = "play.png";
     }
     function pause() {
         if (!started) {
@@ -382,7 +407,7 @@
             id = setInterval(updatetime, 1000);
             id2 = setInterval(smooth, 1);
             y = !y;
-            document.getElementById("pauseimg").src="pause.png";
+            document.getElementById("pauseimg").src = "pause.png";
             status = prevstatus;
             statusupdate();
         } else {
@@ -390,7 +415,7 @@
             clearInterval(id);
             clearInterval(id2);
             y = !y;
-            document.getElementById("pauseimg").src="play.png";
+            document.getElementById("pauseimg").src = "play.png";
             prevstatus = status;
             status = "4";
             statusupdate();
