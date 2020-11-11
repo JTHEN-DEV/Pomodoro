@@ -1,6 +1,7 @@
 # Pomodoro
 A small webpage design for a Pomodoro Timer
-## Features:
+
+**Features:**
 - Progress Bar
 - Fullscreen Mode
 - Settings:
