@@ -374,10 +374,7 @@
     function pause() {
         if (!started) {
             start();
-            started = !started;
-            return;
-        }
-        if (y) {
+        } else if (y) {
             startoffset += (new Date()) - pauseoffset;
             id = setInterval(updatetime, 1000);
             id2 = setInterval(smooth, 1);
